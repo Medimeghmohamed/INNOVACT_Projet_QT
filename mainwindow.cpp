@@ -1,19 +1,21 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "client.h"
-#include "ticket.h"
 #include <QMessageBox>
-#include <QComboBox>
-#include <QTextStream>
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+#include <QDate>
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
 {
-ui->setupUi(this);
-ui->tabclient->setModel(tmpclient.afficher());
-ui->tableTicket->setModel(tmpticket.afficherTicket());
-//ui->tableView_2->setModel(tmpticket.afficherTicket());
+    ui->setupUi(this);
+    ui->tabproduit->setModel(tmpproduit.afficher());
+      ui->tabproduitP->setModel(tmpproduitP.afficher());
 
+}
+
+void MainWindow::refresh()
+{
+  ui->tabproduit->setModel(tmpproduit.afficher());
+  ui->comboBox_3->setModel(tmpproduit.afficher_list());
 }
 
 MainWindow::~MainWindow()
@@ -23,231 +25,126 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pb_ajouter_clicked()
 {
-    int CIN=ui->lineEdit_CIN->text().toInt();
+
+    int id = ui->lineEdit_id->text().toInt();
     QString nom= ui->lineEdit_nom->text();
-    QString prenom= ui->lineEdit_prenom->text();
-    QString email= ui->lineEdit_email->text();
-    int numero = ui->lineEdit_num->text().toInt();
-    Client c(CIN,nom,prenom,email,numero);
-    bool test= c.ajouter(c);
-  if(test)
-{ui->tabclient->setModel(tmpclient.afficher());//refresh
-QMessageBox::information(nullptr, QObject::tr("Ajouter un client"),
-                  QObject::tr("client ajouté.\n"
+    int stock = ui->lineEdit_stock->text().toInt();
+    int stockl = ui->lineEdit_stockl->text().toInt();
+    int prixu = ui->lineEdit_prixu->text().toInt();
+    QDate da = ui->dateEdit_3->date();
+    QString dateP=da.toString();
+
+  QString type = ui->lineEdit_type->text();
+
+
+
+
+
+  Produit P(id,nom,stock,stockl,prixu,type,dateP);
+  bool test=P.ajouter();
+  if(test==true)
+{ui->tabproduit->setModel(tmpproduit.afficher());//refresh
+QMessageBox::information(nullptr, QObject::tr("Ajouter un produit"),
+                  QObject::tr("produit ajouté.\n"
+
                               "Click Cancel to exit."), QMessageBox::Cancel);
 
 }
   else
-      QMessageBox::critical(nullptr, QObject::tr("Ajouter un client"),
+      QMessageBox::critical(nullptr, QObject::tr("Ajouter un produit"),
                   QObject::tr("Erreur !.\n"
                               "Click Cancel to exit."), QMessageBox::Cancel);
 
 
 }
 
-
 void MainWindow::on_pb_supprimer_clicked()
 {
-int CIN = ui->lineEdit_CIN->text().toInt();
-bool test=tmpclient.supprimer(CIN);
-if(test)
-{ui->tabclient->setModel(tmpclient.afficher());//refresh
-    QMessageBox::information(nullptr, QObject::tr("Supprimer un client"),
-                QObject::tr("Client supprimé.\n"
-                            "Click Cancel to exit."), QMessageBox::Cancel);
+    int id = ui->lineEdit_id_2->text().toInt();
+    bool test=tmpproduit.supprimer(id);
+    if(test)
+    {ui->tabproduit->setModel(tmpproduit.afficher());//refresh
+        QMessageBox::information(nullptr, QObject::tr("Supprimer un produit"),
+                    QObject::tr("produit supprimé.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+
+    }
+    else
+        QMessageBox::critical(nullptr, QObject::tr("Supprimer un produit"),
+                    QObject::tr("Erreur !.\n"
+                                "Click Cancel to exit."), QMessageBox::Cancel);
+
 
 }
-else
-    QMessageBox::critical(nullptr, QObject::tr("Supprimer un client"),
-                QObject::tr("Erreur !.\n"
-                            "Click Cancel to exit."), QMessageBox::Cancel);
 
+void MainWindow::on_pb_ajouter_2_clicked()
+{
+    int idP = ui->lineEdit_id_3->text().toInt();
+    QString nomP= ui->lineEdit_nom_2->text();
+    int stockP = ui->lineEdit_stock_2->text().toInt();
+    int stocklP = ui->lineEdit_stockl_2->text().toInt();
+    int prixuP = ui->lineEdit_prixu_2->text().toInt();
+    QDate daP = ui->dateEdit->date();
+    QString datePP=daP.toString();
+
+  QString typeP = ui->lineEdit_type_2->text();
+  int fn = ui->lineEdit_fn->text().toInt();
+  int temp = ui->lineEdit_temp->text().toInt();
+  QDate alert = ui->dateEdit_2->date();
+  QString alertd=alert.toString();
+
+
+
+
+
+
+  ProduitP PP(idP,nomP,stockP,stocklP,prixuP,typeP,datePP,fn,temp,alertd);
+  bool test=PP.ajouter();
+  if(test==true)
+{ui->tabproduitP->setModel(tmpproduitP.afficher());//refresh
+QMessageBox::information(nullptr, QObject::tr("Ajouter un produit"),
+                  QObject::tr("produit ajouté.\n"
+
+                              "Click Cancel to exit."), QMessageBox::Cancel);
+
+}
+  else
+      QMessageBox::critical(nullptr, QObject::tr("Ajouter un produit"),
+                  QObject::tr("Erreur !.\n"
+                              "Click Cancel to exit."), QMessageBox::Cancel);
 
 }
 
 
 void MainWindow::on_pushButton_clicked()
 {
-    int CIN = ui->CIN2->text().toInt();
-    QString nom= ui->lineEdit_nom_1->text();
-    QString prenom= ui->lineEdit_prenom_->text();
-    QString email=ui->lineEdit_email_1->text();
-    int numero=ui->lineEdit_num_1->text().toInt();
+    int cherch = ui->lineEdit_rech->text().toInt();
+    ui->tabproduit->setModel(tmpproduit.recherche(cherch));
 
-Client C (CIN,nom,prenom,email,numero);
-
-
- bool test=C.modifier(C);
-
- if (test)
- {
- QMessageBox::information(nullptr, QObject::tr("modifier un client"),
-                   QObject::tr(" client modifié .\n"
-                               "Click Cancel to exit."), QMessageBox::Cancel);
-}
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    QString nomc =ui->lineEdit_nomC->text();  /*->currentText();*/
-
-    ui->tabclient_3->setModel(tmpclient.recherchernomclient(nomc));
-
-    bool test=tmpclient.recherchernomclient(nomc);
-    if (test=1)
-    {
-    QMessageBox::information(nullptr, QObject::tr("Rechercher un client"),
-                      QObject::tr(" Client n'existe pas .\n"
-                                  "Try again."), QMessageBox::Retry);
-   }
-
-}
-
-void MainWindow::on_pushButton_3_clicked()
-{   Client cc;
-    QSqlQueryModel * p=cc.tri();
-    ui->tableView ->setModel(tmpclient.tri());
-    ui->tableView->setModel(p);
-
-}
-/*TICKET*/
-
-
-void MainWindow::on_pushButton_5_clicked()
-{
-    QTableWidgetItem *Ref =new QTableWidgetItem();
-    QTableWidgetItem *NomArticle =new QTableWidgetItem();
-    QTableWidgetItem *QuantiteArticle =new QTableWidgetItem();
-    QTableWidgetItem *PrixArticle =new QTableWidgetItem();
-    Ref->setText(ui->Ref->text());
-    NomArticle->setText(ui->Nomp->text());
-    QuantiteArticle->setText(ui->quantite->text());
-    PrixArticle->setText(ui->prix->text());
-    int inserROW = ui->Monticket->rowCount();
-    ui->Monticket->insertRow(inserROW);
-    ui->Monticket->setItem(inserROW,0,Ref);
-    ui->Monticket->setItem(inserROW,1,NomArticle);
-    ui->Monticket->setItem(inserROW,2,QuantiteArticle);
-    ui->Monticket->setItem(inserROW,3,PrixArticle);
+    ui->tabproduit->setModel(tmpproduit.triprix());
 
 }
 
 
-
-
-
-
-
-void MainWindow::on_pushButton_4_clicked()
+void MainWindow::on_pb_modifier_clicked()
 {
 
-        int Numcaisse=ui->lineEdit_caisse->text().toInt();
-        QString Agent= ui->lineEdit_agent->text();
-        int NumTicket = ui->lineEdit_num->text().toInt();
-        int Ref= ui->Ref->text().toInt();
-        QString Nom = ui->Nomp->text();
-        int Quantite = ui->quantite->text().toInt();
-        int Prix = ui->quantite->text().toInt();
-        int Total = ui->lineEdit_total->text().toInt();
-
-        ticket t (Numcaisse,NumTicket,Agent,Ref,Nom,Quantite,Prix,Total);
-
-
-        bool test=t.ajouterTicket(t);
-      if(test)
-      {
-    ui->tableTicket->setModel(tmpticket.afficherTicket());//refresh
-    QMessageBox::information(nullptr, QObject::tr("Ajouter un ticket"),
-                      QObject::tr("ticket ajoutée.\n"
-                                  "Click Cancel to exit."), QMessageBox::Cancel);
-
-      }
-      else
-         { QMessageBox::critical(nullptr, QObject::tr("Ajouter un ticket"),
-                      QObject::tr("Erreur !.\n"
-                                  "Click Cancel to exit."), QMessageBox::Cancel);}
-
-
-
 }
 
+void MainWindow::on_comboBox_3_activated(const int &arg1)
+{ ui->comboBox_3->setModel(tmpproduit.afficher_list());
+    tmpproduit.set_REF(arg1);
+    tmpproduit.chercher();
 
-
-
-
-void MainWindow::on_pushButton_8_clicked()
-{
-    int Numcaisse=ui->lineEdit_caisse->text().toInt();
-    QString Agent= ui->lineEdit_agent->text();
-    int NumTicket = ui->lineEdit_num->text().toInt();
-    int Ref= ui->Ref->text().toInt();
-    QString Nom = ui->Nomp->text();
-    int Quantite = ui->quantite->text().toInt();
-    int Prix = ui->quantite->text().toInt();
-    int Total = ui->lineEdit_total->text().toInt();
-
-    ticket t (Numcaisse,NumTicket,Agent,Ref,Nom,Quantite,Prix,Total);
-    bool test=t.modifierTicket(t);
-
-    if (test)
-    {
-    QMessageBox::information(nullptr, QObject::tr("modifier un ticket"),
-                      QObject::tr(" ticket modifié .\n"
-                                  "Click Cancel to exit."), QMessageBox::Cancel);
-   }
-}
-
-
-void MainWindow::on_pushButton_9_clicked()
-{int Caisse = ui->lineEdit_9->text().toInt();
-    bool test=tmpticket.supprimerTicket(Caisse);
-    if(test)
-    {  ui->tableTicket->setModel(tmpticket.afficherTicket());//refresh
-        QMessageBox::information(nullptr, QObject::tr("Supprimer un ticket"),
-                    QObject::tr("Ticket supprimé.\n"
-                                "Click Cancel to exit."), QMessageBox::Cancel);
-
-    }
-    else
-        QMessageBox::critical(nullptr, QObject::tr("Supprimer un ticket"),
-                    QObject::tr("Erreur !.\n"
-                                "Click Cancel to exit."), QMessageBox::Cancel);
-
-}
-
-
-void MainWindow::on_pushButton_10_clicked()
-{
-    ui->Monticket->removeRow(ui->Monticket->currentRow());
-
-
-}
-
-void MainWindow::on_pushButton_6_clicked()
-{
-     QString Ref = ui->Ref->text();
-     QString Nom = ui->Nomp->text();
-     QString Quantite =ui->quantite->text();
-     QString  prix = ui->prix->text();
-     int currentRow = ui->Monticket->currentRow();
-     ui->Monticket->item(currentRow,0)->setText(Ref);
-     ui->Monticket->item(currentRow,1)->setText(Nom);
-     ui->Monticket->item(currentRow,2)->setText(Quantite);
-     ui->Monticket->item(currentRow,3)->setText(prix);
-}
-
-
-void MainWindow::on_pushButton_11_clicked()
-{   QString caissee=ui->lineEdit_10->text();  /*->currentText();*/
-
-    ui->tableView_4->setModel(tmpticket.rechercherTicket(caissee));
-
-    bool test=tmpticket.rechercherTicket(caissee);
-    if (test=1)
-    {
-    QMessageBox::information(nullptr, QObject::tr("Rechercher une ticket "),
-                      QObject::tr(" Ticket n'existe pas .\n"
-                                  "Try again."), QMessageBox::Retry);
-   }
+    /*ui->lineEdit_nom_3->setText(tmpproduit.get_NAME());
+    ui->lineEdit_stock_3->setText(QString::number(tmpproduit.get_STOCK()));
+    ui->lineEdit_stockl_3->setText(QString::number(tmpproduit.get_STOCKL()));
+    ui->lineEdit_prixu_3->setText(QString::number(tmpproduit.get_prixu()));
+    ui->lineEdit_type_3->setText(tmpproduit.get_type());*/
+    //refresh();
 
 }

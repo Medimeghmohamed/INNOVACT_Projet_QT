@@ -1,57 +1,41 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "client.h"
-#include"ticket.h"
-#include <QMainWindow>
-#include <QComboBox>
+#include "produit.h"
 
-namespace Ui {
-class MainWindow;
-}
+#include "produitp.h"
+#include <QMainWindow>
+
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+void refresh();
 private slots:
     void on_pb_ajouter_clicked();
 
     void on_pb_supprimer_clicked();
 
-    void on_pushButton_clicked();
+    void on_pb_ajouter_2_clicked();
+     void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+     void on_pushButton_2_clicked();
 
-    void on_pushButton_3_clicked();
+     void on_pb_modifier_clicked();
 
-    void on_pushButton_4_clicked();
-
-
-
-    //void on_pushButton_5_clicked();
-
-
-   // void on_pushButton_5_clicked();
-
-    void on_pushButton_5_clicked();
-
-    void on_pushButton_8_clicked();
-
-    void on_pushButton_9_clicked();
-
-    void on_pushButton_10_clicked();
-
-    void on_pushButton_6_clicked();
-
-    void on_pushButton_11_clicked();
+     void on_comboBox_3_activated(const int &arg1);
 
 private:
     Ui::MainWindow *ui;
-    Client tmpclient;
-    ticket tmpticket;
+
+    Produit tmpproduit;ProduitP tmpproduitP;
+
 };
 #endif // MAINWINDOW_H
