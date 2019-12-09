@@ -1,6 +1,7 @@
 #ifndef PRODUIT_H
 #define PRODUIT_H
 #include <QString>
+#include <QSystemTrayIcon>
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 
@@ -31,11 +32,13 @@ class Produit
     QSqlQueryModel * afficher();
     bool supprimer(int);
     void chercher();
-    bool modifierproduit();
+    void notification_sup_produit(int id);
+
+    bool modifierproduit(Produit);
      QSqlQueryModel * triprix();
     QSqlQueryModel * recherche(int);
     QSqlQueryModel *  afficher_list();
-    bool modifier_produit();
+    bool modifier_produit(Produit);
 private:
 
     QString NAME,type,dateP;
